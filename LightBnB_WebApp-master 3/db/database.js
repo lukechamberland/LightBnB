@@ -92,7 +92,7 @@ const getAllProperties = function (options, limit = 10) {
   if (options.owner_id) {
     queryString += `AND owner_id = ${options.owner_id}`;
   }
-  
+
   if (options.minimum_price_per_night && options.maximum_price_per_night) {
     const minimum_price_per_night = Number(options.minimum_price_per_night)
     const maximum_price_per_night = Number(options.maximum_price_per_night)
@@ -127,10 +127,40 @@ const getAllProperties = function (options, limit = 10) {
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function (property) {
-  const propertyId = Object.keys(properties).length + 1;
-  property.id = propertyId;
-  properties[propertyId] = property;
-  return Promise.resolve(property);
+  return pool.query(`INSERT INTO properties(owner_id,
+    title,
+    description,
+    thumbnail_photo_url,
+    cover_photo_url,
+    cost_per_night,
+    street,
+    city,
+    province,
+    post_code,
+    country,
+    parking_spaces,
+    number_of_bathrooms,
+    number_of_bedrooms
+  ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;`, 
+  [
+    owner_id,
+    title,
+    description,
+    thumbnail_photo_url,
+    cover_photo_url,
+    cost_per_night,
+    street,
+    city,
+    province,
+    post_code,
+    country,
+    parking_spaces,
+    number_of_bathrooms,
+    number_of_bedrooms
+  ])
+  .then(result => {
+    return result.rows[0];
+  });
 };
 
 module.exports = {
