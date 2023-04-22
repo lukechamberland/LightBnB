@@ -19,9 +19,14 @@ pool.query(`SELECT title FROM properties LIMIT 10;`).then(response => {console.l
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function (email) {
+  //select correct user
   return pool.query(`SELECT * FROM users WHERE email = $1`, [email])
   .then(response => {
     return response.rows[0];
+  })
+  // log error if present
+  .catch(error => {
+    console.error(error);
   });
 };
 
@@ -34,6 +39,9 @@ const getUserWithId = function (id) {
   return pool.query(`SELECT * FROM users WHERE id = $1;`, [id])
   .then(response => {
     return response.rows[0];
+  })
+  .catch(error => {
+    console.error(error);
   });
 };
 
@@ -47,6 +55,9 @@ const addUser = function (user) {
   .then(response => {
     return response.rows[0];
   })
+  .catch(error => {
+    console.error(error);
+  });
 };
 
 /// Reservations
@@ -57,11 +68,15 @@ const addUser = function (user) {
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function (guest_id, limit = 10) {
+  //select first 10 with correct guest id
   return pool.query(`SELECT * FROM reservations WHERE guest_id = ${guest_id} LIMIT ${limit};`)
   .then(response => {
-    console.log('this is response.rows: ', response.rows);
     return response.rows[0];
   })
+  //log error if present
+  .catch(error => {
+    console.error(error);
+  });
 };
 
 /// Properties
@@ -89,10 +104,12 @@ const getAllProperties = function (options, limit = 10) {
     queryString += `AND city LIKE $${queryParams.length} `;
   }
 
+  // select correct user id
   if (options.owner_id) {
     queryString += `AND owner_id = ${options.owner_id}`;
   }
 
+  // select all with correct cost per night  
   if (options.minimum_price_per_night && options.maximum_price_per_night) {
     const minimum_price_per_night = Number(options.minimum_price_per_night)
     const maximum_price_per_night = Number(options.maximum_price_per_night)
@@ -143,23 +160,26 @@ const addProperty = function (property) {
     number_of_bedrooms
   ) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *;`, 
   [
-    owner_id,
-    title,
-    description,
-    thumbnail_photo_url,
-    cover_photo_url,
-    cost_per_night,
-    street,
-    city,
-    province,
-    post_code,
-    country,
-    parking_spaces,
-    number_of_bathrooms,
-    number_of_bedrooms
+    property.owner_id,
+    property.title,
+    property.description,
+    property.thumbnail_photo_url,
+    property.cover_photo_url,
+    property.cost_per_night,
+    property.street,
+    property.city,
+    property.province,
+    property.post_code,
+    property.country,
+    property.parking_spaces,
+    property.number_of_bathrooms,
+    property.number_of_bedrooms
   ])
   .then(result => {
     return result.rows[0];
+  })
+  .catch(error => {
+    console.error(error);
   });
 };
 

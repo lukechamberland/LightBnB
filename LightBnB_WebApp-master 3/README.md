@@ -53,3 +53,10 @@
 * `routes` contains the router files which are responsible for any HTTP requests to `/users/something` or `/api/something`. 
 * `styles` contains all of the sass files. 
 * `server.js` is the entry point to the application. This connects the routes to the database.
+
+# Running the project
+* navigate to directory: LightBnB_WebApp-master\ 3/
+* npm run local
+
+# Learning outcomes for this project
+The main idea with this project is to get comfortable working with SQL, Postgress and using database structures to help create and access data within a website. Once completed, the student will have a much deeper understanding of how these databases work, writing queries within functions and creating or implementing databases to work with the website, as well as many other skills and a greater understanding of SQL in general.  
